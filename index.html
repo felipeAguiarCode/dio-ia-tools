@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9fc">
+  <meta name="description" content="DIO IA Tools — seu hub de ferramentas para explorar trilhas, descobrir skills, criar agentes e montar dashboards.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DIO IA Tools">
+  <meta property="og:description" content="Um lugar para descobrir, aprender e criar com inteligência artificial.">
+  <title>DIO IA Tools — Seu hub de ferramentas</title>
+  <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi9qqMzXVPf6kxjhlMrDcj_p-CRLPIl014VIyx7UzKYg&amp;s=10">
+  <link rel="apple-touch-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi9qqMzXVPf6kxjhlMrDcj_p-CRLPIl014VIyx7UzKYg&amp;s=10">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f9fc;
+      --ink: #111927;
+      --muted: #697385;
+      --line: #e7ebf0;
+      --cyan: #00cafd;
+      --card: #fff;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: linear-gradient(180deg, #f4fbff 0%, #f6f4ff 50%, #fff5f9 100%) fixed;
+    }
+    /* Fundo aurora em degradê */
+    .bg-aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .bg-aurora span { position: absolute; width: 75vmax; height: 75vmax; border-radius: 50%; animation: aurora 24s ease-in-out infinite alternate; will-change: transform; }
+    .bg-aurora span:nth-child(1) { top: -38vmax; left: -28vmax; background: radial-gradient(circle, #00cafd59 0%, transparent 64%); }
+    .bg-aurora span:nth-child(2) { top: -26vmax; right: -38vmax; background: radial-gradient(circle, #7c4dff40 0%, transparent 64%); animation-duration: 28s; animation-delay: -7s; }
+    .bg-aurora span:nth-child(3) { bottom: -42vmax; right: -30vmax; background: radial-gradient(circle, #ee2a7b38 0%, transparent 64%); animation-duration: 32s; animation-delay: -14s; }
+    .bg-aurora span:nth-child(4) { bottom: -40vmax; left: -36vmax; background: radial-gradient(circle, #f9ce344d 0%, transparent 64%); animation-duration: 26s; animation-delay: -4s; }
+    @keyframes aurora {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(9vmax, 7vmax) scale(1.14); }
+      100% { transform: translate(-7vmax, 11vmax) scale(.94); }
+    }
+    /* Animação de surgir */
+    .reveal { animation: reveal-up .75s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms + 80ms); }
+    .story[open] .story-reveal { animation: reveal-up .55s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 70ms + 160ms); }
+    @keyframes reveal-up {
+      from { opacity: 0; translate: 0 20px; filter: blur(6px); }
+      to { opacity: 1; translate: 0 0; filter: none; }
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: .32;
+      background-image: radial-gradient(#9eadba 0.65px, transparent 0.65px);
+      background-size: 22px 22px;
+      mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 75%);
+    }
+    a { color: inherit; }
+    .page {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 540px);
+      min-height: 100dvh;
+      margin: 0 auto;
+      padding: max(25px, env(safe-area-inset-top)) 20px max(26px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+    }
+    .hero { text-align: center; padding: 10px 0 30px; }
+    .avatar { position: relative; width: 112px; height: 112px; margin: 0 auto 26px; padding: 0; display: grid; place-items: center; border: 0; border-radius: 50%; background: none; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .avatar .logo { transition: transform .25s ease; }
+    .avatar:hover .logo { transform: scale(1.04); }
+    .avatar:active .logo { transform: scale(.96); }
+    .avatar:focus-visible { outline: 3px solid #00b9ee; outline-offset: 5px; }
+    .story-ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: story-spin 3s linear 1.65s infinite; }
+    .story-ring circle { stroke-dasharray: 100; stroke-dashoffset: 100; animation: story-draw 1.2s cubic-bezier(.65,0,.35,1) .45s forwards; }
+    @keyframes story-draw { to { stroke-dashoffset: 0; } }
+    @keyframes story-spin { from { rotate: 0deg; } to { rotate: 360deg; } }
+    .logo { display:grid; place-items:center; width:calc(100% - 22px); height:calc(100% - 22px); border-radius:50%; overflow:hidden; background:#101a29; box-shadow:0 20px 44px -24px #6228d780; }
+    .logo img { display:block; width:100%; height:100%; object-fit:cover; }
+    h1 { margin:0 0 11px; font-size:clamp(45px, 11vw, 66px); line-height:.98; letter-spacing:-.075em; font-weight:850; }
+    h1 .accent { padding:0 .07em; margin:0 -.07em; background:linear-gradient(110deg, #00cafd 0%, #00b8a9 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .intro { max-width:360px; margin:0 auto; color:#687586; line-height:1.65; font-size:14px; font-weight:450; }
+    .intro-tagline { display:block; width:fit-content; margin:0 auto 4px; background:linear-gradient(90deg, #6228d7, #ee2a7b 55%, #f08a24); -webkit-background-clip:text; background-clip:text; color:transparent; font-size:11px; font-weight:850; letter-spacing:.16em; }
+    .section-heading { display:flex; align-items:center; margin:0 2px 14px; }
+    .section-heading h2 { margin:0; color:#586777; font-size:10px; letter-spacing:.17em; font-weight:850; }
+    .links { display:grid; gap:12px; }
+    .tool-link {
+      position:relative;
+      display:flex; align-items:center; gap:15px;
+      min-height:97px; padding:16px;
+      color:inherit; text-decoration:none; background:#ffffffc4;
+      -webkit-backdrop-filter:blur(14px) saturate(140%); backdrop-filter:blur(14px) saturate(140%);
+      border:1px solid #ffffffd9; border-radius:21px;
+      box-shadow:0 5px 10px -8px #1b294421, 0 16px 34px -28px #172f5660;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .tool-link::before {
+      content:""; position:absolute; inset:-1px; padding:1.5px; border-radius:inherit; pointer-events:none;
+      background:linear-gradient(120deg, #00cafd, #7c4dff 40%, #ee2a7b 75%, #f9ce34);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor;
+              mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+      opacity:0; transition:opacity .25s ease;
+    }
+    .tool-link:hover { transform:translateY(-3px); border-color:transparent; box-shadow:0 18px 38px -20px #7c4dff4d, 0 5px 10px -8px #1b294421; }
+    .tool-link:hover::before { opacity:1; }
+    .tool-link:active { transform:scale(.99); }
+    .tool-link:focus-visible { outline:3px solid #00b9ee; outline-offset:4px; }
+    .tool-icon { width:59px; height:59px; flex:0 0 59px; border-radius:16px; display:grid; place-items:center; }
+    .tool-icon svg { width:29px; height:29px; stroke-width:1.8; }
+    .explorer { background:#eaf5ff; color:#1b89c8; }
+    .skill { background:#fff3df; color:#e29b25; }
+    .agent { background:#e9f9f2; color:#15966c; }
+    .dashboard { background:#f0ebff; color:#8164d3; }
+    .tool-copy { flex:1; min-width:0; }
+    .tool-type { display:block; margin-bottom:5px; font-size:9px; line-height:1; color:#8693a2; font-weight:850; letter-spacing:.13em; }
+    .tool-name { display:block; font-size:16px; font-weight:780; letter-spacing:-.025em; line-height:1.18; }
+    .tool-description { display:block; margin-top:5px; color:var(--muted); line-height:1.35; font-size:11.5px; }
+    .arrow { flex:0 0 30px; width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#f6f8fb; border:1px solid #eef1f5; color:#6d7c8e; transition:background .2s, color .2s, transform .2s; }
+    .arrow svg { width:15px; height:15px; }
+    .tool-link:hover .arrow { background:linear-gradient(135deg, #00cafd, #7c4dff 60%, #ee2a7b); border-color:transparent; color:#fff; transform:translate(2px,-2px); }
+    .footer { margin-top:auto; padding-top:43px; text-align:center; }
+    .footer-rule { display:flex; align-items:center; gap:14px; color:#a6b1bd; font-size:10px; font-weight:750; letter-spacing:.12em; }
+    .footer-rule::before,.footer-rule::after { content:""; flex:1; height:1px; background:linear-gradient(90deg, transparent, #00cafd80, #7c4dff80); }
+    .footer-rule::after { background:linear-gradient(90deg, #ee2a7b80, #f9ce3480, transparent); }
+    .footer p { margin:14px 0 0; color:#9ba7b3; font-size:11px; line-height:1.6; }
+    @media (min-width:600px) {
+      .page { padding:34px 24px 30px; }
+      .hero { padding:22px 0 40px; }
+      .links { gap:14px; }
+      .tool-link { min-height:108px; padding:18px; }
+      .tool-name { font-size:17px; }
+      .tool-description { font-size:12px; }
+    }
+    @media (max-width:370px) {
+      .page { padding-inline:14px; }
+      .tool-link { gap:11px; padding:13px; }
+      .tool-icon { width:52px; height:52px; flex-basis:52px; border-radius:14px; }
+      .tool-icon svg { width:26px; height:26px; }
+      .tool-name { font-size:15px; }
+      .tool-description { font-size:11px; }
+    }
+
+    /* ---------- Story do cupom ---------- */
+    body.story-open { overflow: hidden; }
+    .story { width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: #fff; overflow: hidden; }
+    .story[open] { display: grid; place-items: center; }
+    .story::backdrop { background: #05080ef0; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+    .story[open]::backdrop { animation: story-fade-in .3s ease; }
+    .story.is-closing::backdrop { animation: story-fade-out .2s ease forwards; }
+    .story-frame {
+      position: relative; display: flex; flex-direction: column;
+      width: 100vw; height: 100vh; height: 100dvh;
+      padding: max(10px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
+      overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+      background:
+        radial-gradient(110% 55% at 0% 0%, #00cafd4d 0%, transparent 62%),
+        radial-gradient(90% 55% at 100% 22%, #6228d766 0%, transparent 62%),
+        radial-gradient(100% 60% at 100% 100%, #ee2a7b5c 0%, transparent 60%),
+        radial-gradient(80% 45% at 0% 100%, #f9ce3426 0%, transparent 60%),
+        #0b1220;
+    }
+    .story-frame:focus { outline: none; }
+    .story[open] .story-frame { animation: story-in .34s cubic-bezier(.2,.8,.2,1); }
+    .story.is-closing .story-frame { animation: story-out .2s ease forwards; }
+    @keyframes story-in { from { opacity: 0; transform: translateY(14px) scale(.92); } }
+    @keyframes story-out { to { opacity: 0; transform: translateY(18px) scale(.94); } }
+    @keyframes story-fade-in { from { opacity: 0; } }
+    @keyframes story-fade-out { to { opacity: 0; } }
+    .story-progress { height: 3px; border-radius: 3px; background: #ffffff4d; overflow: hidden; }
+    .story-progress span { display: block; height: 100%; background: #fff; transform: scaleX(0); transform-origin: left center; }
+    .story-header { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .story-header img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px #ffffff40; }
+    .story-user { flex: 1; margin: 0; font-size: 13px; font-weight: 750; }
+    .story-user span { margin-left: 6px; color: #ffffffa6; font-weight: 500; }
+    .story-close { display: grid; place-items: center; width: 40px; height: 40px; margin-right: -8px; padding: 0; border: 0; border-radius: 50%; background: none; color: #fff; cursor: pointer; }
+    .story-close svg { width: 24px; height: 24px; }
+    .story-close:focus-visible, .coupon-copy:focus-visible, .story-cta-link:focus-visible { outline: 3px solid #00cafd; outline-offset: 3px; }
+    .story-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(14px, 2.6dvh, 22px); text-align: center; padding: 8px 6px; }
+    .story-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border: 1px solid #ffffff2e; border-radius: 999px; background: #ffffff14; font-size: 10.5px; font-weight: 800; letter-spacing: .16em; }
+    .story-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3ee08f; box-shadow: 0 0 0 3px #3ee08f33; }
+    .story-discount { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0; line-height: .86; }
+    .story-discount strong { font-size: clamp(76px, 14dvh, 118px); font-weight: 900; letter-spacing: -.07em; }
+    .story-discount span { display: flex; flex-direction: column; align-items: flex-start; font-size: clamp(22px, 3.6dvh, 30px); font-weight: 900; letter-spacing: -.02em; color: #00cafd; text-align: left; }
+    .story-discount small { margin-top: 6px; color: #fff; font-size: .5em; font-weight: 700; letter-spacing: .02em; }
+    .story-text { max-width: 300px; margin: 0; color: #ffffffbf; font-size: 14px; line-height: 1.55; }
+    .coupon {
+      display: flex; align-items: center; gap: 14px;
+      width: min(100%, 330px); padding: 14px 14px 14px 22px;
+      border: 1.5px dashed #ffffff73; border-radius: 18px; background: #ffffff17;
+      -webkit-mask: radial-gradient(circle 10px at left center, #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at right center, #0000 98%, #000) right / 51% 100% no-repeat;
+              mask: radial-gradient(circle 10px at left center, #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at right center, #0000 98%, #000) right / 51% 100% no-repeat;
+    }
+    .coupon-info { flex: 1; min-width: 0; text-align: left; }
+    .coupon-label { display: block; color: #ffffffa6; font-size: 9.5px; font-weight: 800; letter-spacing: .16em; }
+    .coupon-code { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 22px; font-weight: 800; letter-spacing: .08em; user-select: all; -webkit-user-select: all; }
+    .coupon-copy { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 15px; border: 0; border-radius: 999px; background: #fff; color: #0b1220; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; transition: background .2s, color .2s; }
+    .coupon-copy svg { width: 15px; height: 15px; }
+    .coupon-copy.is-copied { background: #3ee08f; color: #062514; }
+    .countdown { display: grid; gap: 8px; justify-items: center; }
+    .countdown-label { color: #ffffffa6; font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+    .countdown-cells { display: flex; gap: 8px; }
+    .countdown-cell { display: grid; place-items: center; min-width: 56px; padding: 8px 6px 7px; border: 1px solid #ffffff21; border-radius: 12px; background: #ffffff12; }
+    .countdown-cell b { font-size: 21px; font-weight: 850; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+    .countdown-cell small { margin-top: 2px; color: #ffffff99; font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+    .story-cta { display: grid; justify-items: center; gap: 10px; padding-top: 6px; }
+    .story-cta-hint { display: grid; justify-items: center; color: #ffffffb3; font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+    .story-cta-hint svg { width: 20px; height: 20px; margin-bottom: 2px; animation: story-bounce 1.4s ease-in-out infinite; }
+    @keyframes story-bounce { 0%, 100% { transform: translateY(2px); } 50% { transform: translateY(-4px); } }
+    .story-cta-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: min(100%, 330px); height: 52px; border-radius: 999px; background: #fff; color: #0b1220; font-size: 15px; font-weight: 850; text-decoration: none; box-shadow: 0 14px 30px -14px #ee2a7b; transition: transform .2s; }
+    .story-cta-link svg { width: 16px; height: 16px; }
+    .story-cta-link:active { transform: scale(.98); }
+    @media (min-width:600px) {
+      .story-frame { width: calc(min(92dvh, 820px) * 9 / 16); height: min(92dvh, 820px); padding: 12px 16px 20px; border-radius: 20px; box-shadow: 0 40px 90px -30px #000; }
+    }
+    @media (prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } .story-ring, .story-cta-hint svg, .bg-aurora span, .reveal, .story[open] .story-reveal { animation:none !important; } }
+  </style>
+</head>
+<body>
+  <div class="bg-aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <main class="page">
+    <section class="hero" aria-labelledby="page-title">
+      <button class="avatar reveal" style="--i:0" type="button" aria-label="Ver story com cupom disponível" aria-haspopup="dialog" aria-controls="story">
+        <svg class="story-ring" viewBox="0 0 112 112" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="story-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f9ce34"/>
+              <stop offset=".5" stop-color="#ee2a7b"/>
+              <stop offset="1" stop-color="#6228d7"/>
+            </linearGradient>
+          </defs>
+          <circle cx="56" cy="56" r="53" stroke="url(#story-gradient)" stroke-width="6" pathLength="100" transform="rotate(-90 56 56)"/>
+        </svg>
+        <span class="logo">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi9qqMzXVPf6kxjhlMrDcj_p-CRLPIl014VIyx7UzKYg&amp;s=10" alt="" width="90" height="90" referrerpolicy="no-referrer">
+        </span>
+      </button>
+      <h1 id="page-title" class="reveal" style="--i:1">DIO <span class="accent">IA</span> TOOLS.</h1>
+      <p class="intro reveal" style="--i:2"><span class="intro-tagline">EXPLORE · BUILD · CREATE</span>Suas ferramentas favoritas de inteligência artificial em um só lugar.</p>
+    </section>
+
+    <section aria-labelledby="links-title">
+      <div class="section-heading reveal" style="--i:3">
+        <h2 id="links-title">EXPLORE AS FERRAMENTAS</h2>
+      </div>
+      <nav class="links" aria-label="Links das ferramentas">
+        <a class="tool-link reveal" style="--i:4" href="https://felipeaguiarcode.github.io/dio-explorer/" target="_blank" rel="noopener noreferrer" aria-label="Abrir DIO Explorer em uma nova aba">
+          <span class="tool-icon explorer" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="11"/><path d="m19.4 12.6-3 6.8-6.8 3 3-6.8 6.8-3Z"/><circle cx="16" cy="16" r="1.3" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <span class="tool-copy"><span class="tool-type">ROADMAP & APRENDIZADO</span><span class="tool-name">DIO Explorer</span><span class="tool-description">Descubra trilhas e monte seu plano de estudos.</span></span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M8 5h11v11"/></svg></span>
+        </a>
+
+        <a class="tool-link reveal" style="--i:5" href="https://felipeaguiarcode.github.io/skillhub/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Skill Hub em uma nova aba">
+          <span class="tool-icon skill" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v8h-6a4 4 0 1 0 4 4v-2h8v6h-4a4 4 0 1 0 0 8H6v-8h4a4 4 0 1 0 0-8H6V4h8Z"/></svg>
+          </span>
+          <span class="tool-copy"><span class="tool-type">SKILLS & COMUNIDADE</span><span class="tool-name">Skill Hub</span><span class="tool-description">Explore um catálogo de skills e crie as suas.</span></span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M8 5h11v11"/></svg></span>
+        </a>
+
+        <a class="tool-link reveal" style="--i:6" href="https://felipeaguiarcode.github.io/my-agent-studio/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Agent Studio em uma nova aba">
+          <span class="tool-icon agent" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="22" height="17" rx="6"/><path d="M16 10V5m-3 0h6M5 17H2m28 0h-3M10 23h12"/><circle cx="11.5" cy="17.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="20.5" cy="17.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <span class="tool-copy"><span class="tool-type">AGENTES DE IA</span><span class="tool-name">Agent Studio</span><span class="tool-description">Crie e configure seus próprios agentes de IA.</span></span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M8 5h11v11"/></svg></span>
+        </a>
+
+        <a class="tool-link reveal" style="--i:7" href="https://felipeaguiarcode.github.io/dashboard-studio/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Dashboard Studio em uma nova aba">
+          <span class="tool-icon dashboard" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="25" height="24" rx="5"/><path d="M3.5 12h25M12 12v16M17 22v-5m4 5v-8m4 8v-3"/></svg>
+          </span>
+          <span class="tool-copy"><span class="tool-type">DASHBOARDS & DESIGN</span><span class="tool-name">Dashboard Studio</span><span class="tool-description">Desenhe painéis e gere especificações de UI.</span></span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M8 5h11v11"/></svg></span>
+        </a>
+      </nav>
+    </section>
+
+    <footer class="footer reveal" style="--i:8">
+      <div class="footer-rule">EXPLORE · BUILD · CREATE</div>
+      <p>Feito para quem aprende construindo.<br>© 2026 DIO IA Tools</p>
+    </footer>
+  </main>
+
+  <dialog class="story" id="story" aria-label="Story: cupom disponível">
+    <div class="story-frame" tabindex="-1" autofocus>
+      <div class="story-progress" aria-hidden="true"><span></span></div>
+      <header class="story-header">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi9qqMzXVPf6kxjhlMrDcj_p-CRLPIl014VIyx7UzKYg&amp;s=10" alt="" width="34" height="34" referrerpolicy="no-referrer">
+        <p class="story-user">dio.me<span>agora</span></p>
+        <button class="story-close" type="button" aria-label="Fechar story">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </header>
+
+      <div class="story-body">
+        <span class="story-badge story-reveal" style="--i:0">CUPOM DISPONÍVEL AGORA</span>
+        <p class="story-discount story-reveal" style="--i:1"><strong>75%</strong><span>OFF<small>nos planos DIO</small></span></p>
+        <p class="story-text story-reveal" style="--i:2">Use o cupom na assinatura e acelere sua jornada com inteligência artificial.</p>
+        <div class="coupon story-reveal" style="--i:3">
+          <div class="coupon-info">
+            <span class="coupon-label">SEU CUPOM</span>
+            <span class="coupon-code">DIOIA75</span>
+          </div>
+          <button class="coupon-copy" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            <span>Copiar</span>
+          </button>
+        </div>
+        <div class="countdown story-reveal" style="--i:4" data-expires="2026-11-30T23:59:59-03:00">
+          <span class="countdown-label">TERMINA EM</span>
+          <div class="countdown-cells">
+            <span class="countdown-cell"><b data-unit="d">00</b><small>DIAS</small></span>
+            <span class="countdown-cell"><b data-unit="h">00</b><small>HORAS</small></span>
+            <span class="countdown-cell"><b data-unit="m">00</b><small>MIN</small></span>
+            <span class="countdown-cell"><b data-unit="s">00</b><small>SEG</small></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-cta story-reveal" style="--i:5">
+        <span class="story-cta-hint" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg>
+          ARRASTE PARA CIMA
+        </span>
+        <a class="story-cta-link" href="https://www.dio.me/planos" target="_blank" rel="noopener">
+          Ver planos
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 19 5M8 5h11v11"/></svg>
+        </a>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (() => {
+      const DURATION = 10000; // tempo do story em ms
+      const trigger = document.querySelector('.avatar');
+      const story = document.getElementById('story');
+      const frame = story.querySelector('.story-frame');
+      const bar = story.querySelector('.story-progress span');
+      const closeBtn = story.querySelector('.story-close');
+      const cta = story.querySelector('.story-cta-link');
+      const copyBtn = story.querySelector('.coupon-copy');
+      const copyLabel = copyBtn.querySelector('span');
+      const codeEl = story.querySelector('.coupon-code');
+      const countdown = story.querySelector('.countdown');
+      let elapsed = 0, last = 0, raf = 0, clock = 0, paused = false, startY = null;
+
+      function tick(now) {
+        if (!paused) elapsed += Math.min(now - last, 100);
+        last = now;
+        const p = Math.min(elapsed / DURATION, 1);
+        bar.style.transform = `scaleX(${p})`;
+        if (p >= 1) { closeStory(); return; }
+        raf = requestAnimationFrame(tick);
+      }
+
+      function updateCountdown() {
+        const end = Date.parse(countdown.dataset.expires);
+        if (Number.isNaN(end)) { countdown.hidden = true; return; }
+        const s = Math.max(0, Math.floor((end - Date.now()) / 1000));
+        const parts = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+        for (const [unit, value] of Object.entries(parts)) {
+          countdown.querySelector(`[data-unit="${unit}"]`).textContent = String(value).padStart(2, '0');
+        }
+        if (s === 0) countdown.querySelector('.countdown-label').textContent = 'CUPOM ENCERRADO';
+      }
+
+      function openStory() {
+        elapsed = 0; paused = false; startY = null;
+        bar.style.transform = 'scaleX(0)';
+        story.classList.remove('is-closing');
+        story.showModal();
+        document.body.classList.add('story-open');
+        updateCountdown();
+        clock = setInterval(updateCountdown, 1000);
+        last = performance.now();
+        raf = requestAnimationFrame(tick);
+      }
+
+      function closeStory() {
+        if (!story.open || story.classList.contains('is-closing')) return;
+        cancelAnimationFrame(raf);
+        clearInterval(clock);
+        story.classList.add('is-closing');
+        setTimeout(() => story.close(), 200);
+      }
+
+      story.addEventListener('close', () => {
+        cancelAnimationFrame(raf);
+        clearInterval(clock);
+        story.classList.remove('is-closing');
+        document.body.classList.remove('story-open');
+        trigger.focus({ preventScroll: true });
+      });
+      story.addEventListener('cancel', (e) => { e.preventDefault(); closeStory(); });
+      story.addEventListener('click', (e) => { if (e.target === story) closeStory(); });
+      trigger.addEventListener('click', openStory);
+      closeBtn.addEventListener('click', closeStory);
+      cta.addEventListener('click', () => setTimeout(closeStory, 150));
+
+      // Segurar para pausar · arrastar para cima abre os planos · arrastar para baixo fecha
+      frame.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('button, a')) return;
+        startY = e.clientY;
+        paused = true;
+        frame.setPointerCapture(e.pointerId);
+      });
+      frame.addEventListener('pointerup', (e) => {
+        if (startY === null) return;
+        const dy = e.clientY - startY;
+        startY = null;
+        paused = false;
+        if (dy < -60) cta.click();
+        else if (dy > 90) closeStory();
+      });
+      frame.addEventListener('pointercancel', () => { startY = null; paused = false; });
+
+      copyBtn.addEventListener('click', async () => {
+        const code = codeEl.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const range = document.createRange();
+          range.selectNodeContents(codeEl);
+          const sel = getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          document.execCommand('copy');
+          sel.removeAllRanges();
+        }
+        copyBtn.classList.add('is-copied');
+        copyLabel.textContent = 'Copiado!';
+        setTimeout(() => { copyBtn.classList.remove('is-copied'); copyLabel.textContent = 'Copiar'; }, 1800);
+      });
+    })();
+  </script>
+</body>
+</html>
